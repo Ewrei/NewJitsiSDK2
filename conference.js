@@ -1019,7 +1019,8 @@ export default {
     isParticipantModerator(id) {
         const user = room.getParticipantById(id);
 
-        return user && user.isModerator();
+      // return user && user.isModerator();
+           return user && false;
     },
 
     /**
@@ -1705,7 +1706,7 @@ export default {
                 logger.info(`My role changed, new role: ${role}`);
 
                 if (role === 'moderator') {
-                    APP.store.dispatch(maybeSetLobbyChatMessageListener());
+                   // APP.store.dispatch(maybeSetLobbyChatMessageListener());
                 }
 
                 APP.store.dispatch(localParticipantRoleChanged(role));

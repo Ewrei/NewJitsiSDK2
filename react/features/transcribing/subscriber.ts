@@ -13,18 +13,18 @@ import { isRecorderTranscriptionsRunning } from './functions';
 /**
  * Listens for large video participant ID changes.
  */
-StateListenerRegistry.register(
-    /* selector */ isRecorderTranscriptionsRunning,
-    /* listener */ (isRecorderTranscriptionsRunningValue, { getState, dispatch }) => {
-        if (isRecorderTranscriptionsRunningValue) {
-            notifyTranscribingStatusChanged(true);
-            maybeEmitRecordingNotification(dispatch, getState, true);
-        } else {
-            notifyTranscribingStatusChanged(false);
-            maybeEmitRecordingNotification(dispatch, getState, false);
-        }
-    }
-);
+// StateListenerRegistry.register(
+//     /* selector */ isRecorderTranscriptionsRunning,
+//     /* listener */ (isRecorderTranscriptionsRunningValue, { getState, dispatch }) => {
+//         if (isRecorderTranscriptionsRunningValue) {
+//             notifyTranscribingStatusChanged(true);
+//             maybeEmitRecordingNotification(dispatch, getState, true);
+//         } else {
+//             notifyTranscribingStatusChanged(false);
+//             maybeEmitRecordingNotification(dispatch, getState, false);
+//         }
+//     }
+// );
 
 /**
  * Emit a recording started / stopped notification if the transcription started / stopped. Only
@@ -46,13 +46,14 @@ function maybeEmitRecordingNotification(dispatch: IStore['dispatch'], getState: 
         return;
     }
 
-    batch(() => {
-        dispatch(showNotification({
-            descriptionKey: on ? 'recording.on' : 'recording.off',
-            titleKey: 'dialog.recording'
-        }, NOTIFICATION_TIMEOUT_TYPE.SHORT));
-        dispatch(playSound(on ? RECORDING_ON_SOUND_ID : RECORDING_OFF_SOUND_ID));
-    });
+    //TODO remove recording.on always and RECORDING_OFF_SOUND_ID
+//     batch(() => {
+//         dispatch(showNotification({
+//             descriptionKey: on ? 'recording.off' : 'recording.off',
+//             titleKey: 'dialog.recording'
+//         }, NOTIFICATION_TIMEOUT_TYPE.SHORT));
+//         dispatch(playSound(on ? RECORDING_OFF_SOUND_ID : RECORDING_OFF_SOUND_ID));
+//     });
 }
 
 /**

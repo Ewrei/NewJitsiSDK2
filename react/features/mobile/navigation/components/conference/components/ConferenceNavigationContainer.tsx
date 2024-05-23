@@ -43,7 +43,6 @@ import SpeakerStats
 import LanguageSelectorDialog
 // @ts-ignore
     from '../../../../../subtitles/components/native/LanguageSelectorDialog';
-import Whiteboard from '../../../../../whiteboard/components/native/Whiteboard';
 // @ts-ignore
 import { screen } from '../../../routes';
 import {
@@ -63,8 +62,7 @@ import {
     settingsNavigationContainerScreenOptions,
     sharedDocumentScreenOptions,
     speakerStatsScreenOptions,
-    subtitlesScreenOptions,
-    whiteboardScreenOptions
+    subtitlesScreenOptions
     // @ts-ignore
 } from '../../../screenOptions';
 // @ts-ignore
@@ -133,13 +131,7 @@ const ConferenceNavigationContainer = () => {
                         ...securityScreenOptions,
                         title: t('security.title')
                     }} />
-                <ConferenceStack.Screen
-                    component = { StartRecordingDialog }
-                    name = { screen.conference.recording }
-                    options = {{
-                        ...recordingScreenOptions,
-                        title: t('recording.title')
-                    }} />
+                    //This is the button that will be displayed StartRecordingDialog
                 <ConferenceStack.Screen
                     component = { StartLiveStreamDialog }
                     name = { screen.conference.liveStream }
@@ -209,21 +201,9 @@ const ConferenceNavigationContainer = () => {
                         ...subtitlesScreenOptions,
                         title: t('transcribing.subtitles')
                     }} />
-                <ConferenceStack.Screen
-                    component = { BreakoutRooms }
-                    name = { screen.conference.breakoutRooms }
-                    options = {{
-                        ...breakoutRoomsScreenOptions,
-                        title: t('breakoutRooms.title')
-                    }} />
-                <ConferenceStack.Screen
-                    // @ts-ignore
-                    component = { Whiteboard }
-                    name = { screen.conference.whiteboard }
-                    options = {{
-                        ...whiteboardScreenOptions,
-                        title: t('whiteboard.screenTitle')
-                    }} />
+                     //This is the button that will be displayed BreakoutRooms
+                       //This is the button that will be displayed Whiteboard
+
             </ConferenceStack.Navigator>
         </NavigationContainer>
     );

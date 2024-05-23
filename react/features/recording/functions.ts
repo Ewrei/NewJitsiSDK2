@@ -370,8 +370,8 @@ export function isRemoteParticipantRecordingLocally(state: IReduxState) {
 export function unregisterRecordingAudioFiles(dispatch: IStore['dispatch']) {
     dispatch(unregisterSound(LIVE_STREAMING_OFF_SOUND_FILE));
     dispatch(unregisterSound(LIVE_STREAMING_ON_SOUND_FILE));
-    dispatch(unregisterSound(RECORDING_OFF_SOUND_FILE));
-    dispatch(unregisterSound(RECORDING_ON_SOUND_FILE));
+//     dispatch(unregisterSound(RECORDING_OFF_SOUND_FILE));
+//     dispatch(unregisterSound(RECORDING_ON_SOUND_FILE));
 }
 
 /**
@@ -396,11 +396,11 @@ export function registerRecordingAudioFiles(dispatch: IStore['dispatch'], should
         LIVE_STREAMING_ON_SOUND_ID,
         getSoundFileSrc(LIVE_STREAMING_ON_SOUND_FILE, language)));
 
-    dispatch(registerSound(
-        RECORDING_OFF_SOUND_ID,
-        getSoundFileSrc(RECORDING_OFF_SOUND_FILE, language)));
-
-    dispatch(registerSound(
-        RECORDING_ON_SOUND_ID,
-        getSoundFileSrc(RECORDING_ON_SOUND_FILE, language)));
+//     dispatch(registerSound(
+//         RECORDING_OFF_SOUND_ID,
+//         getSoundFileSrc(RECORDING_OFF_SOUND_FILE, language)));
+//
+//     dispatch(registerSound(
+//         RECORDING_ON_SOUND_ID,
+//         getSoundFileSrc(RECORDING_ON_SOUND_FILE, language)));
 }

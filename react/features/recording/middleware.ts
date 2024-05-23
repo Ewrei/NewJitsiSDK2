@@ -263,10 +263,10 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => async action => 
                     soundOn = LIVE_STREAMING_ON_SOUND_ID;
                 }
 
-                if (soundOff && soundOn) {
-                    dispatch(stopSound(soundOn));
-                    dispatch(playSound(soundOff));
-                }
+//                 if (soundOff && soundOn) {
+//                     dispatch(stopSound(soundOn));
+//                     dispatch(playSound(soundOff));
+//                 }
 
                 if (typeof APP !== 'undefined') {
                     APP.API.notifyRecordingStatusChanged(false, mode);
