@@ -131,7 +131,6 @@ const ConferenceNavigationContainer = () => {
                         ...securityScreenOptions,
                         title: t('security.title')
                     }} />
-                    //This is the button that will be displayed StartRecordingDialog
                 <ConferenceStack.Screen
                     component = { StartLiveStreamDialog }
                     name = { screen.conference.liveStream }
@@ -201,9 +200,6 @@ const ConferenceNavigationContainer = () => {
                         ...subtitlesScreenOptions,
                         title: t('transcribing.subtitles')
                     }} />
-                     //This is the button that will be displayed BreakoutRooms
-                       //This is the button that will be displayed Whiteboard
-
             </ConferenceStack.Navigator>
         </NavigationContainer>
     );

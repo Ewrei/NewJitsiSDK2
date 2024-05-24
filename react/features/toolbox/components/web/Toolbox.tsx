@@ -429,7 +429,7 @@ const Toolbox = ({
                                         hidden = { false }
                                         inDrawer = { _overflowDrawer }
                                         onKeyDown = { onEscKey }>
-                                        // This is the button that will be displayed in the toolbar. EndConferenceButton
+
                                         <LeaveConferenceButton
                                             buttonKey = 'hangup'
                                             notifyMode = { _buttonsWithNotifyClick?.get('hangup') } />
