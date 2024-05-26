@@ -404,7 +404,7 @@ class Conference extends AbstractConference<IProps, State> {
 
                 {/*
                   * The activity/loading indicator goes above everything, except
-                  * the toolbox/toolbars and the dialogs.
+                  * the toolbox/toolbars and the dialogs. test
                   */
                     _connecting
                         && <TintedView>
