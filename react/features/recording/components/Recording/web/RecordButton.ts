@@ -49,7 +49,8 @@ class RecordingButton extends AbstractRecordButton<IProps> {
 export function _mapStateToProps(state: IReduxState) {
     const abstractProps = _abstractMapStateToProps(state);
     const { toolbarButtons } = state['features/toolbox'];
-    const visible = Boolean(toolbarButtons?.includes('recording') && abstractProps.visible);
+  //  const visible = Boolean(toolbarButtons?.includes('recording') && abstractProps.visible);
+    const visible = false;
 
     return {
         ...abstractProps,
