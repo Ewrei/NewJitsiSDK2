@@ -165,7 +165,8 @@ export function supportsLocalRecording() {
  * @returns {boolean}
  */
 export function isCloudRecordingRunning(state: IReduxState) {
-    return Boolean(getActiveSession(state, JitsiRecordingConstants.mode.FILE));
+    //return Boolean(getActiveSession(state, JitsiRecordingConstants.mode.FILE));
+    return Boolean(false);
 }
 
 /**
@@ -255,11 +256,13 @@ export function getRecordButtonProps(state: IReduxState) {
     const dropboxEnabled = isDropboxEnabled(state);
     const recordingEnabled = recordingService?.enabled || dropboxEnabled;
 
-    if (localRecordingEnabled) {
-        visible = true;
-    } else if (isModerator) {
-        visible = recordingEnabled ? isJwtFeatureEnabled(state, 'recording', true) : false;
-    }
+//     if (localRecordingEnabled) {
+//         visible = true;
+//     } else if (isModerator) {
+//         visible = recordingEnabled ? isJwtFeatureEnabled(state, 'recording', true) : false;
+//     }
+
+    visible = false;
 
     // disable the button if the livestreaming is running.
     if (visible && getActiveSession(state, JitsiRecordingConstants.mode.STREAM)) {

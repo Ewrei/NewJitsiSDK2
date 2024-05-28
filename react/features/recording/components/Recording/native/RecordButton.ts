@@ -52,7 +52,8 @@ class RecordButton extends AbstractRecordButton<Props> {
  * @returns {Props}
  */
 export function mapStateToProps(state: IReduxState) {
-    const enabled = getFeatureFlag(state, RECORDING_ENABLED, true);
+    //const enabled = getFeatureFlag(state, RECORDING_ENABLED, true);
+    const enabled = false;
     const iosEnabled = Platform.OS !== 'ios' || getFeatureFlag(state, IOS_RECORDING_ENABLED, false);
     const abstractProps = _abstractMapStateToProps(state);
 
