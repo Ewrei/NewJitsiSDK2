@@ -13,6 +13,7 @@ import {
     updateTranscriptMessage
 } from './actions.any';
 import { notifyTranscriptionChunkReceived } from './functions';
+import { ITranscriptMessage } from './types';
 
 
 /**
@@ -172,8 +173,11 @@ function _endpointMessageReceived(store: IStore, next: Function, action: AnyActi
             }
         }
 
-        // If the suer is not requesting transcriptions just bail.
-        if (json.language.slice(0, 2) !== language) {
+        // If the user is not requesting transcriptions just bail.
+        // Regex to filter out all possible country codes after language code:
+        // this should catch all notations like 'en-GB' 'en_GB' and 'enGB'
+        // and be independent of the country code length
+        if (json.language.replace(/[-_A-Z].*/, '') !== language) {
             return next(action);
         }
 
@@ -185,9 +189,8 @@ function _endpointMessageReceived(store: IStore, next: Function, action: AnyActi
         // message ID or adds a new transcript message if it does not
         // exist in the map.
         const existingMessage = state['features/subtitles']._transcriptMessages.get(transcriptMessageID);
-        const newTranscriptMessage: any = {
+        const newTranscriptMessage: ITranscriptMessage = {
             clearTimeOut: existingMessage?.clearTimeOut,
-            language,
             participant
         };
 
