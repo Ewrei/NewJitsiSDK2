@@ -26,8 +26,7 @@ export const isConnecting = (state: IReduxState) => {
     // - the XMPP connection is connected and the conference is joining, or
     // - the XMPP connection is connected and we have no conference yet, nor we
     //   are leaving one.
-
-   //TODO - This is the original code. We need to modify this to return true always
-    return Boolean(connecting);
-      //  connecting || (connection && (!membersOnly && (joining || (!conference && !leaving))))
+    return Boolean(
+        connecting || (connection && (!membersOnly && (joining || (!conference && !leaving))))
+    );
 };
