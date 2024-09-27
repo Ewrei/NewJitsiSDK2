@@ -16,6 +16,7 @@ local new_id = require 'util.id'.medium;
 local filters = require 'util.filters';
 
 local util = module:require 'util';
+local ends_with = util.ends_with;
 local is_vpaas = util.is_vpaas;
 local room_jid_match_rewrite = util.room_jid_match_rewrite;
 local get_room_from_jid = util.get_room_from_jid;
@@ -42,6 +43,9 @@ local local_muc_domain = muc_domain_prefix..'.'..local_domain;
 
 local NICK_NS = 'http://jabber.org/protocol/nick';
 
+-- in certain cases we consider participants with token as moderators, this is the default behavior which can be turned off
+local auto_promoted_with_token = module:get_option_boolean('visitors_auto_promoted_with_token', true);
+
 -- we send stats for the total number of rooms, total number of participants and total number of visitors
 local measure_rooms = module:measure('vnode-rooms', 'amount');
 local measure_participants = module:measure('vnode-participants', 'amount');
@@ -61,9 +65,10 @@ module:hook('muc-occupant-pre-join', function (event)
     local occupant, room, origin, stanza = event.occupant, event.room, event.origin, event.stanza;
     local node, host = jid.split(occupant.bare_jid);
 
-    if host == local_domain then
+    if prosody.hosts[host] and not is_admin(occupant.bare_jid) then
         if room._main_room_lobby_enabled then
-            origin.send(st.error_reply(stanza, 'cancel', 'not-allowed', 'Visitors not allowed while lobby is on!'));
+            origin.send(st.error_reply(stanza, 'cancel', 'not-allowed', 'Visitors not allowed while lobby is on!')
+                :tag('no-visitors-lobby', { xmlns = 'jitsi:visitors' }));
             return true;
         else
             occupant.role = 'visitor';
@@ -160,7 +165,7 @@ module:hook('muc-occupant-left', function (event)
     local room, occupant = event.room, event.occupant;
     local occupant_domain = jid.host(occupant.bare_jid);
 
-    if occupant_domain == local_domain then
+    if prosody.hosts[occupant_domain] and not is_admin(occupant.bare_jid) then
         local focus_occupant = get_focus_occupant(room);
         if not focus_occupant then
             module:log('info', 'No focus found for %s', room.jid);
@@ -245,9 +250,12 @@ module:hook('muc-broadcast-presence', function (event)
             if identity and identity.id then
                 user_id = session.jitsi_meet_context_user.id;
 
-                -- non-vpass and having a token in correct tenant is considered a moderator
-                if session.jitsi_meet_str_tenant
-                    and session.jitsi_web_query_prefix == string.lower(session.jitsi_meet_str_tenant) then
+                if room._data.moderator_id then
+                    if room._data.moderator_id == user_id then
+                        is_moderator = true;
+                    end
+                elseif session.auth_token and auto_promoted_with_token then
+                    -- non-vpaas and having a token is considered a moderator
                     is_moderator = true;
                 end
             end
@@ -358,8 +366,19 @@ function process_host_module(name, callback)
         process_host(name);
     end
 end
+-- if the message received ends with the main domain, these are system messages
+-- for visitors, let's correct the room name there
+local function message_handler(event)
+    local origin, stanza = event.origin, event.stanza;
+
+    if ends_with(stanza.attr.from, main_domain) then
+        stanza.attr.from = stanza.attr.from:sub(1, -(main_domain:len() + 1))..local_domain;
+    end
+end
+
 process_host_module(local_domain, function(host_module, host)
     host_module:hook('iq/host', stanza_handler, 10);
+    host_module:hook('message/full', message_handler);
 end);
 
 -- only live chat is supported for visitors
@@ -427,14 +446,15 @@ module:hook_global('stats-update', function ()
     for room in prosody.hosts[module.host].modules.muc.each_room() do
         rooms_count = rooms_count + 1;
         for _, o in room:each_occupant() do
-            if jid.host(o.bare_jid) == local_domain then
-                visitors_count = visitors_count + 1;
-            else
-                participants_count = participants_count + 1;
+            if not is_admin(o.bare_jid) then
+                local _, host = jid.split(o.bare_jid);
+                if prosody.hosts[host] then -- local hosts are visitors (including jigasi)
+                    visitors_count = visitors_count + 1;
+                else
+                    participants_count = participants_count + 1;
+                end
             end
         end
-        -- do not count jicofo
-        participants_count = participants_count - 1;
     end
 
     measure_rooms(rooms_count);
@@ -526,6 +546,7 @@ local function iq_from_main_handler(event)
     -- if this is update it will either set or remove the password
     room:set_password(node.attr.password);
     room._data.meetingId = node.attr.meetingId;
+    room._data.moderator_id = node.attr.moderatorId;
     local createdTimestamp = node.attr.createdTimestamp;
     room.created_timestamp = createdTimestamp and tonumber(createdTimestamp) or nil;
 
